@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_SERVER = "ubuntu@your-aws-server-ip"  // IP-адреса AWS-сервера
+        AWS_SERVER = "ubuntu@51.20.252.245"  // IP-адреса AWS-сервера
         APP_NAME = "myapp"  // Назва контейнера
         IMAGE_NAME = "myapp-image"  // Назва Docker-образу
     }
