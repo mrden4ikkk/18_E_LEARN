@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_SERVER = "ubuntu@51.20.252.245"  // IP-адреса AWS-сервера
+        AWS_SERVER = "ubuntu@13.60.79.20"  // IP-адреса AWS-сервера
         APP_NAME = "myapp"  // Назва контейнера
         IMAGE_NAME = "myapp-image"  // Назва Docker-образу
     }
@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'git@github.com:mrden4ikkk/18_E_LEARN.git'
+                git branch: 'master', url: 'git@github.com:mrden4ikkk/18_E_LEARN.git'
             }
         }
 
