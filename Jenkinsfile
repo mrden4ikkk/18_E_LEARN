@@ -1,43 +1,59 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_SERVER = "ubuntu@your-aws-server-ip"  // IP-адреса AWS-сервера
+        APP_NAME = "myapp"  // Назва контейнера
+        IMAGE_NAME = "myapp-image"  // Назва Docker-образу
+    }
+
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                checkout scm
+                git branch: 'main', url: 'git@github.com:mrden4ikkk/18_E_LEARN.git'
             }
         }
-        stage('Build') {
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    def buildTool = 'dotnet'
-                    sh "${buildTool} build 18_E_LEARN.sln"
+                    sh "docker build -t ${IMAGE_NAME} ."
                 }
             }
         }
-        stage('Test') {
+
+        stage('Save & Transfer Image') {
             steps {
                 script {
-                    def testTool = 'dotnet'
-                    sh "${testTool} test 18_E_LEARN.sln"
+                    sh "docker save ${IMAGE_NAME} | gzip > ${IMAGE_NAME}.tar.gz"
+                    sh "scp -i /path/to/aws-key.pem ${IMAGE_NAME}.tar.gz ${AWS_SERVER}:/home/ubuntu/"
                 }
             }
         }
-        stage('Docker Build') {
+
+        stage('Deploy on AWS') {
             steps {
                 script {
-                    def dockerImage = '18_e_learn_image'
-                    sh "docker build -t ${dockerImage} ."
+                    sh """
+                        ssh -i /path/to/aws-key.pem ${AWS_SERVER} << EOF
+                        docker stop ${APP_NAME} || true
+                        docker rm ${APP_NAME} || true
+                        docker rmi ${IMAGE_NAME} || true
+                        docker load < /home/ubuntu/${IMAGE_NAME}.tar.gz
+                        docker run -d --name ${APP_NAME} -p 80:80 ${IMAGE_NAME}
+                        EOF
+                    """
                 }
             }
         }
-        stage('Deploy') {
-            steps {
-                script {
-                    def dockerImage = '18_e_learn_image'
-                    sh "docker run -d -p 8080:80 ${dockerImage}"
-                }
-            }
+    }
+
+    post {
+        success {
+            echo "Deployment successful!"
+        }
+        failure {
+            echo "Deployment failed!"
         }
     }
 }
