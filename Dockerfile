@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 # Copy and restore the project
@@ -14,7 +14,7 @@ RUN dotnet-ef database update --startup-project "18_E_LEARN.Web" --project "18_E
 RUN dotnet publish "18_E_LEARN.Web/18_E_LEARN.Web.csproj" -c Release -o /app/build
 
 # Build the final image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 COPY --from=build /app/build .
 EXPOSE 80
