@@ -14,13 +14,13 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME} ."
-                }
-            }
-        }
+        #stage('Build Docker Image') {
+            #steps {
+               # script {
+                 #   sh "docker build -t ${IMAGE_NAME} ."
+               # }
+          #  }
+      #  }
 
         stage('Save & Transfer Image') {
             steps {
