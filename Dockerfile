@@ -14,7 +14,7 @@ RUN dotnet-ef database update --startup-project "18_E_LEARN.Web" --project "18_E
 RUN dotnet publish "18_E_LEARN.Web/18_E_LEARN.Web.csproj" -c Release -o /app/build
 
 # Build the final image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 COPY --from=build /app/build .
 EXPOSE 80
